@@ -61,19 +61,29 @@ export async function completeOnboarding(formData: FormData) {
 
   if (profileError) throw profileError
 
-  // 3. user_sports 데이터 가공 및 삽입
-  const sportsData = data.sports.map((s: { name: string; frequency: number; experience: string }) => ({
-    user_id: user.id,
-    sport_name: s.name,
-    weekly_frequency: s.frequency, // UI에서 1, 2, 4 등으로 매핑해서 보내줘야 함
-    experience_level: s.experience,
-  }))
-
-  const { error: sportsError } = await supabase
+  // 3. 기존 user_sports 데이터 삭제 (중복 방지)
+  const { error: deleteError } = await supabase
     .from('user_sports')
-    .insert(sportsData)
+    .delete()
+    .eq('user_id', user.id)
 
-  if (sportsError) throw sportsError
+  if (deleteError) throw deleteError
+
+  // 4. user_sports 데이터 가공 및 삽입
+  if (data.sports.length > 0) {
+    const sportsData = data.sports.map((s: { name: string; frequency: number; experience: string }) => ({
+      user_id: user.id,
+      sport_name: s.name,
+      weekly_frequency: s.frequency,
+      experience_level: s.experience,
+    }))
+
+    const { error: sportsError } = await supabase
+      .from('user_sports')
+      .insert(sportsData)
+
+    if (sportsError) throw sportsError
+  }
 
   redirect('/dashboard')
 }
