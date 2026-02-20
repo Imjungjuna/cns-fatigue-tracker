@@ -60,46 +60,46 @@ export default function SignupPage() {
 
         <form action={signup}>
           <CardContent className="space-y-6">
-            <div className="space-y-2">
+                <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
+                    <Input
+                      id="email"
                 name="email"
-                type="email"
+                      type="email"
                 placeholder="your.email@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                 className="h-11"
-                required
-              />
-            </div>
+                      required
+                    />
+                </div>
 
-            <div className="space-y-2">
+                <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Input
-                  id="password"
+                  <div className="relative">
+                    <Input
+                      id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                   className="pr-10 h-11"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                >
+                    >
                   {showPassword ? (
                     <EyeOff className="w-4 h-4" />
                   ) : (
                     <Eye className="w-4 h-4" />
                   )}
-                </button>
-              </div>
+                    </button>
+                </div>
 
               {password && (
                 <div className="space-y-2 pt-2">
@@ -130,33 +130,33 @@ export default function SignupPage() {
                   </div>
                 ))}
               </div>
-            </div>
+                </div>
 
-            <Button type="submit" className="w-full h-11 font-medium">
+                <Button type="submit" className="w-full h-11 font-medium">
               Sign Up
-            </Button>
+                </Button>
 
-            <div className="text-center text-sm text-muted-foreground">
+              <div className="text-center text-sm text-muted-foreground">
               Already have an account?{' '}
               <Link
                 href="/login"
-                className="text-primary hover:underline font-medium"
-              >
+                  className="text-primary hover:underline font-medium"
+                >
                 Sign in
               </Link>
-            </div>
+              </div>
 
-            <div className="text-xs text-center text-muted-foreground pt-2">
-              By continuing, you agree to our{' '}
-              <a href="#" className="text-primary hover:underline">
-                Terms of Service
-              </a>{' '}
-              and{' '}
-              <a href="#" className="text-primary hover:underline">
-                Privacy Policy
-              </a>
-            </div>
-          </CardContent>
+          <div className="text-xs text-center text-muted-foreground pt-2">
+            By continuing, you agree to our{' '}
+            <a href="#" className="text-primary hover:underline">
+              Terms of Service
+            </a>{' '}
+            and{' '}
+            <a href="#" className="text-primary hover:underline">
+              Privacy Policy
+            </a>
+          </div>
+        </CardContent>
         </form>
       </Card>
     </div>

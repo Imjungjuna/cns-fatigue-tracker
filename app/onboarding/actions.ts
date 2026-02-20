@@ -15,20 +15,20 @@ export async function completeOnboarding(formData: FormData) {
   const lifestyleStressRaw = formData.get('lifestyleStress')
   const lifestyleStress = lifestyleStressRaw ? Number(lifestyleStressRaw) : 0
 
-  const sports: { name: string; frequency: number; experience: string }[] = []
+  const sports: { name: string; frequency: string; experience: string }[] = []
 
   for (let i = 1; i <= 3; i++) {
     const name = String(formData.get(`sportName${i}`) ?? '').trim()
     if (!name) continue
 
-    const frequencyRaw = formData.get(`sportFrequency${i}`)
-    const frequency = frequencyRaw ? Number(frequencyRaw) : 0
-
+    const frequency = String(formData.get(`sportFrequency${i}`) ?? '').trim()
     const experience = String(
       formData.get(`sportExperience${i}`) ?? ''
     ).trim()
 
-    sports.push({ name, frequency, experience })
+    if (frequency && experience) {
+      sports.push({ name, frequency, experience })
+    }
   }
 
   const data = {
@@ -46,8 +46,11 @@ export async function completeOnboarding(formData: FormData) {
   if (!user) redirect('/login')
 
   // 1. 데이터 유효성 검사 (서버측 방어 코드)
-  if (data.goals.length > 2) throw new Error('목표는 최대 2개까지 선택 가능해')
-  if (data.sports.length > 3) throw new Error('운동은 최대 3개까지 선택 가능해')
+  if (data.goals.length > 2) throw new Error('You can select up to 2 goals.')
+  if (data.sports.length > 3) throw new Error('You can select up to 3 sports.')
+  if (!data.lifestyleStress || data.lifestyleStress < 1 || data.lifestyleStress > 5) {
+    throw new Error('Please select a fatigue level.')
+  }
 
   // 2. profiles upsert (없으면 생성, 있으면 업데이트)
   const { error: profileError } = await supabase
@@ -71,10 +74,18 @@ export async function completeOnboarding(formData: FormData) {
 
   // 4. user_sports 데이터 가공 및 삽입
   if (data.sports.length > 0) {
-    const sportsData = data.sports.map((s: { name: string; frequency: number; experience: string }) => ({
+    // frequency 문자열을 숫자로 변환하는 함수
+    const parseFrequency = (freq: string): number => {
+      if (freq === '1x/week') return 1
+      if (freq === '2-3x/week') return 2 // 또는 3, 평균값 2 사용
+      if (freq === '4+ times/week') return 4
+      return 1 // 기본값
+    }
+
+    const sportsData = data.sports.map((s: { name: string; frequency: string; experience: string }) => ({
       user_id: user.id,
       sport_name: s.name,
-      weekly_frequency: s.frequency,
+      weekly_frequency: parseFrequency(s.frequency),
       experience_level: s.experience,
     }))
 

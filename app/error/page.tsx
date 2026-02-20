@@ -1,3 +1,5 @@
-export default function ErrorPage() {
-    return <p>Sorry, something went wrong</p>
+import { NotFound } from "@/components/ui/not-found-2";
+
+export default function DemoOne() {
+  return <NotFound />;
 }
