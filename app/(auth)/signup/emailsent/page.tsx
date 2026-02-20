@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { CheckCircle2, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -119,7 +119,7 @@ const EmailSentConfirmation: React.FC<EmailSentConfirmationProps> = ({
   );
 };
 
-export default function EmailSentPage() {
+function EmailSentContent() {
   const searchParams = useSearchParams();
   const email = searchParams.get('email') || '';
 
@@ -130,5 +130,36 @@ export default function EmailSentPage() {
       description="We've sent you an email with a verification link. Please check your inbox and click the link to continue."
       showResendButton={true}
     />
+  );
+}
+
+export default function EmailSentPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-primary/5 p-4">
+        <Card className="w-full max-w-md bg-transparent border-none shadow-none">
+          <CardHeader className="text-center space-y-4 pb-4">
+            <div className="flex justify-center">
+              <div className="relative">
+                <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse" />
+                <div className="relative bg-primary/10 rounded-full p-3">
+                  <CheckCircle2 className="w-10 h-10 text-primary" strokeWidth={1.5} />
+                </div>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <CardTitle className="text-2xl font-bold text-foreground">
+                Check your inbox
+              </CardTitle>
+              <CardDescription className="text-base text-muted-foreground">
+                Loading...
+              </CardDescription>
+            </div>
+          </CardHeader>
+        </Card>
+      </div>
+    }>
+      <EmailSentContent />
+    </Suspense>
   );
 }
