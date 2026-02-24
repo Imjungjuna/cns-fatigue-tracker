@@ -55,6 +55,7 @@ function getAuthCallbackBaseUrl(): string {
 //   redirect(`/signup/emailsent`)
 // }
 
+/** Google 로그인. 콜백(/auth/callback)에서 getPostLoginRedirectPath 로 온보딩/대시보드 분기 */
 export async function signInWithGoogle() {
   const supabase = await createClient()
   const baseUrl = getAuthCallbackBaseUrl()
@@ -62,7 +63,7 @@ export async function signInWithGoogle() {
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo },
+    options: { redirectTo: redirectTo },
   })
 
   if (error) {

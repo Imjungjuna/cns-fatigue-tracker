@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import {
   Card,
   CardContent,
@@ -7,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { LogoutButton } from './logout-button'
 
 export default async function DashboardPage() {
@@ -35,10 +37,18 @@ export default async function DashboardPage() {
     .select('*')
     .eq('user_id', user.id)
 
+  // 최근 7일 일지 (RPE 타임라인용)
+  const { data: recentRecords } = await supabase
+    .from('daily_records')
+    .select('date, exercised_yesterday, prev_rpe, prev_exercise_type, cns_score')
+    .eq('user_id', user.id)
+    .order('date', { ascending: false })
+    .limit(7)
+
   return (
     <div className="min-h-screen bg-background px-4 py-8">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-foreground">
               환영합니다, {profile.nickname || '사용자'}님!
@@ -47,7 +57,12 @@ export default async function DashboardPage() {
               CNS 피로도 추적 대시보드
             </p>
           </div>
-          <LogoutButton />
+          <div className="flex items-center gap-2">
+            <Button asChild>
+              <Link href="/checkin">체크인하기</Link>
+            </Button>
+            <LogoutButton />
+          </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -112,12 +127,65 @@ export default async function DashboardPage() {
               <CardDescription>자주 사용하는 기능</CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
+              <Button asChild variant="outline" className="w-full justify-center">
+                <Link href="/checkin">체크인하기</Link>
+              </Button>
               <p className="text-sm text-muted-foreground">
                 피로도 기록, 데이터 분석 등의 기능이 여기에 표시됩니다.
               </p>
             </CardContent>
           </Card>
         </div>
+
+        {/* 최근 7일 RPE 타임라인 */}
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle>최근 7일 RPE</CardTitle>
+            <CardDescription>날짜별 운동 부하 (RPE 1~10, 미운동 시 휴식)</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {recentRecords && recentRecords.length > 0 ? (
+              <div className="relative">
+                {/* 세로 연결선 */}
+                <div className="absolute left-[11px] top-2 bottom-2 w-px bg-border" aria-hidden />
+                <ul className="space-y-0">
+                  {recentRecords.map((record) => (
+                    <li key={record.date} className="relative flex gap-4 pb-6 last:pb-0">
+                      {/* 타임라인 점 */}
+                      <div className="relative z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-primary bg-background">
+                        <span className="text-[10px] font-semibold text-primary">
+                          {record.prev_rpe ?? '-'}
+                        </span>
+                      </div>
+                      <div className="flex-1 min-w-0 pt-0.5">
+                        <p className="font-medium text-foreground">
+                          {record.date}
+                          {record.exercised_yesterday && record.prev_exercise_type && (
+                            <span className="ml-2 text-sm font-normal text-muted-foreground">
+                              · {record.prev_exercise_type}
+                            </span>
+                          )}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {record.exercised_yesterday
+                            ? `RPE ${record.prev_rpe ?? '-'}`
+                            : '휴식'}
+                          {record.cns_score != null && (
+                            <span className="ml-2">· CNS {record.cns_score}</span>
+                          )}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                아직 기록이 없습니다. 체크인을 시작해 보세요.
+              </p>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
