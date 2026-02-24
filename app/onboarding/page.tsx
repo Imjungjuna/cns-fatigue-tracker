@@ -67,7 +67,7 @@ export default function OnboardingPage() {
   const toggleGoal = (goal: string) => {
     setSelectedGoals((prev) => {
       const isCurrentlySelected = prev.includes(goal)
-      
+
       if (isCurrentlySelected) {
         // If already selected, remove it
         setGoalSelectionError(null)
@@ -170,7 +170,7 @@ export default function OnboardingPage() {
                     </button>
                   )
                 })}
-              </div>
+            </div>
 
               {/* Error Message */}
               {goalSelectionError && (
@@ -196,7 +196,7 @@ export default function OnboardingPage() {
               <CardDescription className="text-xs">
                 Select up to 3 sports. For each selected sport, choose frequency and experience.
               </CardDescription>
-              
+
               {/* Sport Selection Chips */}
               <div className="flex flex-wrap gap-2 mt-4">
                 {SPORTS.map((sport) => {
@@ -258,7 +258,7 @@ export default function OnboardingPage() {
                         type="hidden"
                         name={`sportName${idx + 1}`}
                         value={sport.name}
-                      />
+                    />
                       <input
                         type="hidden"
                         name={`sportFrequency${idx + 1}`}
@@ -290,7 +290,7 @@ export default function OnboardingPage() {
                         type="hidden"
                         name={`sportExperience${idx + 1}`}
                         value={sport.experience}
-                      />
+                    />
                     </div>
                   </div>
                 </Card>

@@ -38,16 +38,19 @@ export default async function Home() {
 
           {/* CTA Buttons */}
           <div className="mb-16 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Button asChild size="lg" className="w-full sm:w-auto">
-              <Link href="/signup">
-                시작하기
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
-              <Link href="/login">
-                로그인
-              </Link>
-            </Button>
+            {!user ? (
+              <Button asChild size="lg" className="w-full sm:w-auto">
+                <Link href="/login">
+                  시작하기
+                </Link>
+              </Button>
+            ) : (
+              <Button asChild size="lg" className="w-full sm:w-auto">
+                <Link href="/dashboard">
+                  내 대시보드로 이동
+                </Link>
+              </Button>
+            )}
           </div>
         </div>
 
@@ -167,7 +170,7 @@ export default async function Home() {
               정밀한 피로도 추적으로 최적의 성과를 달성하세요
             </p>
             <Button asChild size="lg" variant="secondary">
-              <Link href="/signup">
+              <Link href="/login">
                 무료로 시작하기
               </Link>
             </Button>

@@ -15,15 +15,15 @@ export async function GET(request: NextRequest) {
       const { data: { user } } = await supabase.auth.getUser()
       
       if (user) {
-        // 프로필이 있는지 확인 (maybeSingle은 없어도 에러를 던지지 않음)
+        // 온보딩 완료 여부 확인
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
-          .select('id')
+          .select('onboarding_completed')
           .eq('id', user.id)
           .maybeSingle()
 
-        // 에러가 발생하거나 프로필이 없으면 온보딩으로, 있으면 대시보드로
-        const redirectTo = (profileError || !profile) ? '/onboarding' : '/dashboard'
+        // 에러/프로필 없음/온보딩 미완료 → 온보딩, 완료 시 대시보드
+        const redirectTo = (profileError || !profile || !profile.onboarding_completed) ? '/onboarding' : '/dashboard'
         return NextResponse.redirect(`${origin}${redirectTo}`)
       }
     }

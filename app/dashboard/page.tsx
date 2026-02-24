@@ -17,15 +17,15 @@ export default async function DashboardPage() {
     redirect('/login')
   }
 
-  // 프로필 정보 가져오기 (maybeSingle은 없어도 에러를 던지지 않음)
+  // 프로필 정보 가져오기 (온보딩 완료 여부 포함)
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', user.id)
     .maybeSingle()
 
-  // 프로필이 없거나 에러가 발생하면 온보딩으로 리다이렉트
-  if (profileError || !profile) {
+  // 프로필 없음/에러/온보딩 미완료 시 온보딩으로 리다이렉트
+  if (profileError || !profile || !profile.onboarding_completed) {
     redirect('/onboarding')
   }
 

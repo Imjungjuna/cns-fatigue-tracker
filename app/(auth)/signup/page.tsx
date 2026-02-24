@@ -13,7 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { signup } from "../actions";
+// import { signup } from "../actions";
 import Link from "next/link";
 
 const passwordRequirements = [
@@ -58,7 +58,7 @@ export default function SignupPage() {
           </CardDescription>
         </CardHeader>
 
-        <form action={signup}>
+        <form>
           <CardContent className="space-y-6">
                 <div className="space-y-2">
               <Label htmlFor="email">Email</Label>

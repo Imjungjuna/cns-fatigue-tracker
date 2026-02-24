@@ -27,7 +27,7 @@ export async function completeOnboarding(formData: FormData) {
     ).trim()
 
     if (frequency && experience) {
-      sports.push({ name, frequency, experience })
+    sports.push({ name, frequency, experience })
     }
   }
 
@@ -52,7 +52,7 @@ export async function completeOnboarding(formData: FormData) {
     throw new Error('Please select a fatigue level.')
   }
 
-  // 2. profiles upsert (없으면 생성, 있으면 업데이트)
+  // 2. profiles upsert (없으면 생성, 있으면 업데이트) + 온보딩 완료 플래그
   const { error: profileError } = await supabase
     .from('profiles')
     .upsert({
@@ -60,6 +60,7 @@ export async function completeOnboarding(formData: FormData) {
       nickname: data.nickname,
       goals: data.goals,
       lifestyle_stress: data.lifestyleStress,
+      onboarding_completed: true,
     })
 
   if (profileError) throw profileError

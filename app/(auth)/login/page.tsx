@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import { signInWithGoogle, login } from '../actions';
+import { signInWithGoogle } from '../actions';
 import Link from 'next/link';
 
 export default function LoginPage() {
@@ -30,7 +30,7 @@ export default function LoginPage() {
             Sign in to your account to continue
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 mt-2">
           <form action={signInWithGoogle}>
             <Button
               type="submit"
@@ -59,7 +59,7 @@ export default function LoginPage() {
           </Button>
           </form>
 
-          {true && (
+          {/* {true && (
             <>
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
@@ -157,7 +157,7 @@ export default function LoginPage() {
                 </Link>
               </div>
             </>
-          )}
+          )} */}
 
           <div className="text-xs text-center text-muted-foreground pt-2">
             By continuing, you agree to our{' '}
